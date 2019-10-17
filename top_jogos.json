@@ -1,0 +1,105 @@
+{
+  "data": [
+    {
+      "id": "511224",
+      "name": "Apex Legends",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Apex%20Legends-{width}x{height}.jpg"
+    },
+    {
+      "id": "32399",
+      "name": "Counter-Strike: Global Offensive",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/./Counter-Strike:%20Global%20Offensive-{width}x{height}.jpg"
+    },
+    {
+      "id": "509658",
+      "name": "Just Chatting",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Just%20Chatting-{width}x{height}.jpg"
+    },
+    {
+      "id": "18122",
+      "name": "World of Warcraft",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Warcraft-{width}x{height}.jpg"
+    },
+    {
+      "id": "33214",
+      "name": "Fortnite",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Fortnite-{width}x{height}.jpg"
+    },
+    {
+      "id": "21779",
+      "name": "League of Legends",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends-{width}x{height}.jpg"
+    },
+    {
+      "id": "497057",
+      "name": "Destiny 2",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Destiny%202-{width}x{height}.jpg"
+    },
+    {
+      "id": "32982",
+      "name": "Grand Theft Auto V",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Grand%20Theft%20Auto%20V-{width}x{height}.jpg"
+    },
+    {
+      "id": "512804",
+      "name": "FIFA 20",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/FIFA%2020-{width}x{height}.jpg"
+    },
+    {
+      "id": "29595",
+      "name": "Dota 2",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Dota%202-{width}x{height}.jpg"
+    },
+    {
+      "id": "417752",
+      "name": "Talk Shows \u0026 Podcasts",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Talk%20Shows%20\u0026%20Podcasts-{width}x{height}.jpg"
+    },
+    {
+      "id": "493057",
+      "name": "PLAYERUNKNOWN'S BATTLEGROUNDS",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/PLAYERUNKNOWN%27S%20BATTLEGROUNDS-{width}x{height}.jpg"
+    },
+    {
+      "id": "27471",
+      "name": "Minecraft",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Minecraft-{width}x{height}.jpg"
+    },
+    {
+      "id": "138585",
+      "name": "Hearthstone",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Hearthstone-{width}x{height}.jpg"
+    },
+    {
+      "id": "513143",
+      "name": "Teamfight Tactics",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Teamfight%20Tactics-{width}x{height}.jpg"
+    },
+    {
+      "id": "512534",
+      "name": "Tom Clancy's Ghost Recon Breakpoint",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Tom%20Clancy%27s%20Ghost%20Recon%20Breakpoint-{width}x{height}.jpg"
+    },
+    {
+      "id": "2748",
+      "name": "Magic: The Gathering",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/./Magic:%20The%20Gathering-{width}x{height}.jpg"
+    },
+    {
+      "id": "460630",
+      "name": "Tom Clancy's Rainbow Six: Siege",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/./Tom%20Clancy%27s%20Rainbow%20Six:%20Siege-{width}x{height}.jpg"
+    },
+    {
+      "id": "491487",
+      "name": "Dead by Daylight",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Dead%20by%20Daylight-{width}x{height}.jpg"
+    },
+    {
+      "id": "498566",
+      "name": "Slots",
+      "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/Slots-{width}x{height}.jpg"
+    }
+  ],
+  "pagination": { "cursor": "eyJiIjpudWxsLCJhIjp7Ik9mZnNldCI6MjB9fQ" }
+}
