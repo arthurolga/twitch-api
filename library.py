@@ -53,3 +53,36 @@ def add_game(connection,game_name, game_id):
             cursor.execute('COMMIT')
         except pymysql.err.IntegrityError as e:
             print("Game ja existente")
+
+def list_user_id(connection):
+    query = """
+    SELECT streamer_id
+    FROM streamer
+    """
+    with conn.cursor() as cursor:
+        cursor.execute(query)
+        res = cursor.fetchall()
+        return res
+
+def list_user_id_game(connection,game_id):
+    query = """
+    SELECT stream_user_id
+    FROM stream WHERE stream_game_id = %s
+    GROUP BY stream_user_id
+    """
+    with conn.cursor() as cursor:
+        cursor.execute(query,(game_id))
+        res = cursor.fetchall()
+        return res
+
+def add_link(connection,game_id,from_id,to_id):
+    query = """
+    INSERT INTO links(links_game_name,from_id,to_id)
+    VALUES(%s,%s,%s)
+    """
+    with conn.cursor() as cursor:
+        try:
+            cursor.execute(query,(game_id,from_id,to_id))
+            cursor.execute('COMMIT')
+        except pymysql.err.IntegrityError as e:
+            print("relacao ja existente")

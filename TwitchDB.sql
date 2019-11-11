@@ -35,3 +35,10 @@ PRIMARY KEY (stream_id,stream_request_time),
 FOREIGN KEY (stream_user_id) REFERENCES streamer(streamer_id),
 FOREIGN KEY (stream_game_id) REFERENCES game(game_id)
 );
+
+CREATE TABLE IF NOT EXISTS twitch.links (
+links_game_name VARCHAR(32) NOT NULL,
+from_id INT NOT NULL,
+to_id INT NOT NULL,
+PRIMARY KEY (links_game_name,from_id,to_id)
+)CHARSET=UTF8MB4;

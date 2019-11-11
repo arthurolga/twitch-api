@@ -8,25 +8,25 @@ from library import *
 #'2008-01-01 00:00:01'
 games_ids={
     #Call of Duty: Modern Warfare
-    "COD_MW_id":"512710",
+    "Call of Duty: Modern Warfare":"512710",
     #Fortnite 
-    "Fortnite_id":"33214",
+    "Fortnite":"33214",
     #League of Legends
-    "Lol_id":"21779",
+    "League of Legends":"21779",
     #Just Chatting 
-    "JustChatting_id":"509658",
+    "Just Chatting":"509658",
     #Grand Theft Auto V
-    "Gta5_id":"32982", 
+    "Grand Theft Auto V":"32982", 
     #Counter-Strike: Global Offensive 
-    "CsGo_id":"32399",
+    "Counter-Strike: Global Offensive":"32399",
     #Dead by Daylight
-    "DBD_id":"491487" ,
+    "Dead by Daylight":"491487" ,
     #Apex Legends
-    "ApexLegends_id":"511224", 
+    "Apex Legends":"511224", 
     #Teamfight Tactics
-    "TFT_id":"513143",
+    "Teamfight Tactics":"513143",
     #World of Warcraft 
-    "WOW_id":"18122" 
+    "World of Warcraft ":"18122" 
 }
 
 
@@ -80,7 +80,7 @@ def addStreamertoDataBase(streamer_id):
 
 def GetTopStreamsbyGame(game_id):
     url='https://api.twitch.tv/helix/streams'
-    para={"first":"10",
+    para={"first":"50",
         "game_id":game_id}
     response = requests.get(url,headers=headers,params=para)
     response=response.json()["data"]
@@ -105,9 +105,34 @@ def addStreamtoDataBase():
             addStreamertoDataBase(user_id)
             add_stream(conn,id,user_id,user_name,game_id,type,title,viewer_count,started_at,request_time,language)
 
-FillGameDataBase()
-#schedule.every().minute.do(addStreamtoDataBase)
-addStreamtoDataBase()
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1) # wait one minute
+
+def get_link(from_id,to_id):
+    url = "https://api.twitch.tv/helix/users/follows?from_id="+from_id+"&to_id="+to_id
+    headers = {'content-type': 'application/json',
+'Client-ID': 'ioe7gqjfxhbxr0aqg4drweoul0jtrt'}
+    response = requests.get(url,headers=headers)
+    response = response.json()["data"]
+    return response
+
+def fillUserLinks():
+
+    for game_name in games_ids:
+        id=games_ids[game_name]
+        streamer_ids=list_user_id_game(conn,id)
+        for i in range(len(streamer_ids)):
+            for j in range(len(streamer_ids)):
+                req = get_link(str(streamer_ids[i][0]),str(streamer_ids[j][0]))
+                if len(req)>0:
+                    print(game_name,streamer_ids[i][0],streamer_ids[j][0])
+                    add_link(conn,game_name,streamer_ids[i][0],streamer_ids[j][0])
+
+        #print(streamer_ids)
+
+
+#FillGameDataBase()
+#addStreamtoDataBase()
+
+#fillUserLinks()
+
+conn.close()
+    
