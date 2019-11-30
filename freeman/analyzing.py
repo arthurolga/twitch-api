@@ -4,8 +4,8 @@ import seaborn as sns
 from math import isclose, log
 from random import choices, sample
 from itertools import product, permutations, combinations
-from scipy.stats import pearsonr, chi2_contingency, ttest_1samp, ttest_ind, ttest_rel
-from sklearn.linear_model import LinearRegression, LogisticRegression
+from scipy.stats import shapiro, normaltest, pearsonr, chi2_contingency, ttest_1samp, ttest_ind, ttest_rel
+from statsmodels.api import OLS, Logit
 from sklearn.preprocessing import OneHotEncoder
 from prince import CA
 
@@ -181,6 +181,22 @@ def concat_edgeframes(graphs, col):
     return concat({value: g.edgeframe for value, g in graphs.items()}, col)
 
 
+def nortest(df, a):
+    _, sw = shapiro(df[a])
+    _, ap = normaltest(df[a])
+    index = ['Shapiro-Wilk', 'D\'Agostino-Pearson']
+    columns = ['p-value']
+    return pd.DataFrame([ap, sw], index=index, columns=columns)
+
+
+def nortest_nodes(g, a):
+    return nortest(g.nodeframe, a)
+
+
+def nortest_edges(g, a):
+    return nortest(g.edgeframe, a)
+
+
 def cortest(df, x, y, max_perm=None):
     return _cortest(_value(df, x), _value(df, y), max_perm)
 
@@ -248,36 +264,36 @@ def mixtest_edges(g, x, y, max_perm=None):
     return mixtest(g.edgeframe, x, y, max_perm)
 
 
-def linregress(df, X, y):
-    dfX = list(zip(*(_value(df, x) for x in X)))
+def linregress(df, X, y, *args, **kwargs):
+    dfX = _items(df, X)
     dfy = _value(df, y)
-    model = LinearRegression()
-    model.fit(dfX, dfy)
-    return [coef for coef in model.coef_], model.score(dfX, dfy)
+    model = OLS(dfy, dfX)
+    result = model.fit(*args, **kwargs)
+    return result.summary()
 
 
-def linregress_nodes(g, X, y):
-    return linregress(g.nodeframe, X, y)
+def linregress_nodes(g, X, y, *args, **kwargs):
+    return linregress(g.nodeframe, X, y, *args, **kwargs)
 
 
-def linregress_edges(g, X, y):
-    return linregress(g.edgeframe, X, y)
+def linregress_edges(g, X, y, *args, **kwargs):
+    return linregress(g.edgeframe, X, y, *args, **kwargs)
 
 
-def logregress(df, X, y, max_iter=100):
-    dfX = list(zip(*(df[x] for x in X)))
-    dfy = df[y]
-    model = LogisticRegression(solver='lbfgs', max_iter=max_iter, multi_class='auto')
-    model.fit(dfX, dfy)
-    return {class_: [coef for coef in coef_] for class_, coef_ in zip(model.classes_, model.coef_)}, model.score(dfX, dfy)
+def logregress(df, X, y, *args, **kwargs):
+    dfX = _items(df, X)
+    dfy = _value(df, y)
+    model = Logit(dfy, dfX)
+    result = model.fit_regularized(*args, **kwargs)
+    return result.summary()
 
 
-def logregress_nodes(g, X, y, max_iter=100):
-    return logregress(g.nodeframe, X, y, max_iter)
+def logregress_nodes(g, X, y, *args, **kwargs):
+    return logregress(g.nodeframe, X, y, *args, **kwargs)
 
 
-def logregress_edges(g, X, y, max_iter=100):
-    return logregress(g.edgeframe, X, y, max_iter)
+def logregress_edges(g, X, y, *args, **kwargs):
+    return logregress(g.edgeframe, X, y, *args, **kwargs)
 
 
 def encode(df, X):
@@ -347,16 +363,23 @@ def matplot_edges(g, cols, control=None):
     matplot(g.edgeframe, cols, control)
 
 
-def valcount(df, x):
-    return df[x].value_counts(normalize=True)
+def valcount(df, x, order=None, transpose=False):
+    data = pd.DataFrame(df[x].value_counts(normalize=True))
+    data = data.round(2)
+    if order is not None:
+        data = data.reindex(order)
+    data.columns = ['All']
+    if transpose:
+        return data.transpose()
+    return data
 
 
-def valcount_nodes(g, x):
-    return valcount(g.nodeframe, x)
+def valcount_nodes(g, x, order=None, transpose=False):
+    return valcount(g.nodeframe, x, order, transpose)
 
 
-def valcount_edges(g, x):
-    return valcount(g.edgeframe, x)
+def valcount_edges(g, x, order=None, transpose=False):
+    return valcount(g.edgeframe, x, order, transpose)
 
 
 def contable(df, x, y):
@@ -396,3 +419,6 @@ def boxplot_nodes(g, x, y, control=None):
 
 def boxplot_edges(g, x, y, control=None):
     boxplot(g.edgeframe, x, y, control)
+
+
+sns.set()

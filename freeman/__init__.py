@@ -8,9 +8,9 @@ from .simulating import *
 
 
 def load(path, key='random', *args, **kwargs):
-    g = networkx.read_gml(path, label='id')
+    g = nx.read_gml(path, label='id')
 
-    if isinstance(g, networkx.MultiGraph):
+    if isinstance(g, nx.MultiGraph):
         raise NetworkXError('freeman does not support multigraphs')
 
     free = []
@@ -19,7 +19,7 @@ def load(path, key='random', *args, **kwargs):
             free.append(n)
 
     if len(free) > 0 and len(free) < g.number_of_nodes():
-        raise ValueError('some nodes have position, but others do not: ' + ', '.join([str(n) for n in free]))
+        raise ValueError('some nodes have position, but others do not: ' + ', '.join(str(n) for n in free))
 
     if free:
         move(g, key, *args, **kwargs)
@@ -33,6 +33,15 @@ def load(path, key='random', *args, **kwargs):
 
         normalize(g)
 
+    for n in g.nodes:
+        if 'border' in g.nodes[n]:
+            value = g.nodes[n]['border']
+
+            if value == 0 or value == 1:
+                g.nodes[n]['border'] = bool(value)
+            else:
+                raise ValueError('node border must be binary')
+
     for n, m in g.edges:
         if 'labflip' in g.edges[n, m]:
             value = g.edges[n, m]['labflip']
@@ -40,7 +49,7 @@ def load(path, key='random', *args, **kwargs):
             if value == 0 or value == 1:
                 g.edges[n, m]['labflip'] = bool(value)
             else:
-                raise ValueError('labflip must be binary')
+                raise ValueError('edge labflip must be binary')
 
     return Graph(g)
 
@@ -55,22 +64,6 @@ def triads(g, ordered=False):
     if ordered:
         return permutations(g.nodes, 3)
     return combinations(g.nodes, 3)
-
-
-def copy_node(g, h, n):
-    if not h.has_node(n):
-        raise ValueError('second graph must have the node')
-    if not g.has_node(n):
-        g.add_node(n)
-    g.nodes[n].update(h.nodes[n])
-
-
-def copy_edge(g, h, n, m):
-    if not h.has_edge(n, m):
-        raise ValueError('second graph must have the edge')
-    if not g.has_edge(n, m):
-        g.add_edge(n, m)
-    g.edges[n, m].update(h.edges[n, m])
 
 
 def set_each_node(g, key, map, filter=None):
@@ -135,6 +128,19 @@ class Graph(ObjectProxy):
     def edgeframe(self, edgeframe):
         self._edgeframe = edgeframe
 
+    def copy(self):
+        return Graph(self.__wrapped__.copy())
+    def to_undirected(self):
+        return Graph(self.__wrapped__.to_undirected())
+    def to_directed(self):
+        return Graph(self.__wrapped__.to_directed())
+    def subgraph(self, nodes):
+        return Graph(self.__wrapped__.subgraph(nodes))
+    def edge_subgraph(self, edges):
+        return Graph(self.__wrapped__.edge_subgraph(edges))
+    def reverse(self):
+        return Graph(self.__wrapped__.reverse())
+
     def interact(self, path=None, physics=False):
         interact(self, path, physics)
     def draw(self, toolbar=False):
@@ -152,8 +158,8 @@ class Graph(ObjectProxy):
         scale_nodes_size(self, map, lower, upper)
     def scale_edges_width(self, map, lower=None, upper=None):
         scale_edges_width(self, map, lower, upper)
-    def scale_nodes_alpha(self, map, lower=None, upper=None, hue=None):
-        scale_nodes_alpha(self, map, lower, upper, hue)
+    def scale_nodes_dark(self, map, lower=None, upper=None, hue=None):
+        scale_nodes_dark(self, map, lower, upper, hue)
     def scale_edges_alpha(self, map, lower=None, upper=None, hue=None):
         scale_edges_alpha(self, map, lower, upper, hue)
     def heat_nodes(self, map, lower=None, upper=None, middle=None):
@@ -180,6 +186,10 @@ class Graph(ObjectProxy):
         set_nodecols(self, maps)
     def set_edgecols(self, maps):
         set_edgecols(self, maps)
+    def nortest_nodes(self, a):
+        return nortest_nodes(self, a)
+    def nortest_edges(self, a):
+        return nortest_edges(self, a)
     def cortest_nodes(self, x, y, max_perm=None):
         return cortest_nodes(self, x, y, max_perm)
     def cortest_edges(self, x, y, max_perm=None):
@@ -196,14 +206,14 @@ class Graph(ObjectProxy):
         return mixtest_nodes(self, x, y, max_perm)
     def mixtest_edges(self, x, y, max_perm=None):
         return mixtest_edges(self, x, y, max_perm)
-    def linregress_nodes(self, X, y):
-        return linregress_nodes(self, X, y)
-    def linregress_edges(self, X, y):
-        return linregress_edges(self, X, y)
-    def logregress_nodes(self, X, y, max_iter=100):
-        return logregress_nodes(self, X, y, max_iter)
-    def logregress_edges(self, X, y, max_iter=100):
-        return logregress_edges(self, X, y, max_iter)
+    def linregress_nodes(self, X, y, *args, **kwargs):
+        return linregress_nodes(self, X, y, *args, **kwargs)
+    def linregress_edges(self, X, y, *args, **kwargs):
+        return linregress_edges(self, X, y, *args, **kwargs)
+    def logregress_nodes(self, X, y, *args, **kwargs):
+        return logregress_nodes(self, X, y, *args, **kwargs)
+    def logregress_edges(self, X, y, *args, **kwargs):
+        return logregress_edges(self, X, y, *args, **kwargs)
     def encode_nodes(self, X):
         return encode_nodes(self, X)
     def encode_edges(self, X):
@@ -224,10 +234,10 @@ class Graph(ObjectProxy):
         matplot_nodes(self, cols, control)
     def matplot_edges(self, cols, control=None):
         matplot_edges(self, cols, control)
-    def valcount_nodes(self, x):
-        return valcount_nodes(self, x)
-    def valcount_edges(self, x):
-        return valcount_edges(self, x)
+    def valcount_nodes(self, x, order=None, transpose=False):
+        return valcount_nodes(self, x, order, transpose)
+    def valcount_edges(self, x, order=None, transpose=False):
+        return valcount_edges(self, x, order, transpose)
     def contable_nodes(self, x, y):
         return contable_nodes(self, x, y)
     def contable_edges(self, x, y):
@@ -245,10 +255,6 @@ class Graph(ObjectProxy):
         return dyads(self, ordered)
     def triads(self, ordered=False):
         return triads(self, ordered)
-    def copy_node(self, h, n):
-        copy_node(self, h, n)
-    def copy_edge(self, h, n, m):
-        copy_edge(self, h, n, m)
     def set_each_node(self, key, map, filter=None):
         set_each_node(self, key, map, filter)
     def set_each_edge(self, key, map, filter=None):
